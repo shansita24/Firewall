@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firewall Configuration</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Firewall Configuration</h1>
+
+        <!-- On/Off Buttons for Firewall -->
+        <div class="section">
+            <h2>Firewall Control</h2>
+            <button id="start-firewall" onclick="controlFirewall('start')">Start Firewall</button>
+            <button id="stop-firewall" onclick="controlFirewall('stop')">Stop Firewall</button>
+        </div>
+
+        <!-- Banned IPs -->
+        <div class="section">
+            <h2>Banned IP Addresses</h2>
+            <form id="banned-ip-form" method="POST" action="/update_banned_ips">
+                <ul id="banned-ip-list">
+                    {% for ip in banned_ips %}
+                    <li>
+                        <input type="text" name="banned_ips[]" value="{{ ip }}">
+                        <button type="button" onclick="removeElement(this)">Remove</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button type="button" onclick="addIpField()">+</button>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+
+        <!-- Banned Ports -->
+        <div class="section">
+            <h2>Banned Ports</h2>
+            <form id="banned-port-form" method="POST" action="/update_banned_ports">
+                <ul id="banned-port-list">
+                    {% for port in banned_ports %}
+                    <li>
+                        <input type="text" name="banned_ports[]" value="{{ port }}">
+                        <button type="button" onclick="removeElement(this)">Remove</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button type="button" onclick="addPortField()">+</button>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+
+        <!-- Banned Prefixes -->
+        <div class="section">
+            <h2>Banned Prefixes</h2>
+            <form id="banned-prefix-form" method="POST" action="/update_banned_prefixes">
+                <ul id="banned-prefix-list">
+                    {% for prefix in banned_prefixes %}
+                    <li>
+                        <input type="text" name="banned_prefixes[]" value="{{ prefix }}">
+                        <button type="button" onclick="removeElement(this)">Remove</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button type="button" onclick="addPrefixField()">+</button>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to control the firewall
+        function controlFirewall(action) {
+            const url = action === 'start' ? '/start_firewall' : '/stop_firewall';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to add new IP fields
+        function addIpField() {
+            var ul = document.getElementById("banned-ip-list");
+            var li = document.createElement("li");
+            li.innerHTML = '<input type="text" name="banned_ips[]" value=""><button type="button" onclick="removeElement(this)">Remove</button>';
+            ul.appendChild(li);
+        }
+
+        // Function to add new Port fields
+        function addPortField() {
+            var ul = document.getElementById("banned-port-list");
+            var li = document.createElement("li");
+            li.innerHTML = '<input type="text" name="banned_ports[]" value=""><button type="button" onclick="removeElement(this)">Remove</button>';
+            ul.appendChild(li);
+        }
+
+        // Function to add new Prefix fields
+        function addPrefixField() {
+            var ul = document.getElementById("banned-prefix-list");
+            var li = document.createElement("li");
+            li.innerHTML = '<input type="text" name="banned_prefixes[]" value=""><button type="button" onclick="removeElement(this)">Remove</button>';
+            ul.appendChild(li);
+        }
+
+        // Function to remove a field
+        function removeElement(button) {
+            var li = button.parentElement;
+            li.remove();
+        }
+    </script>
+</body>
+</html>
