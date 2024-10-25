@@ -1,0 +1,8 @@
+{
+  "ListOfBannedIpAddr": [],
+  "ListOfBannedPorts": [],
+  "ListOfBannedPrefixes": ["104.244.42.0/24"],
+  "TimeThreshold": 10,
+  "PacketThreshold": 100,
+  "BlockPingAttacks": "True"
+}
